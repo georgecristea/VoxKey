@@ -435,3 +435,18 @@ final class AppState: ObservableObject {
         }
     }
 }
+
+// MARK: - Demo (README screenshot)
+
+extension AppState {
+    /// `VoxKey --demo --snapshot out.png` shows a sample "listening" state for the README
+    /// screenshot. Nothing is started: no microphone, no hotkey, no downloads.
+    func showDemoState() {
+        captureState = .recording
+        inputLevel = 0.55
+        recordingElapsed = 4
+        partialText = "Hold the key, say what you mean, and it lands right at your cursor"
+        lastMessage = MUKStatusMessage("Hold \(hotkeyLabel) to dictate.")
+        Task { await engine.refreshStatus() }  // read-only: which models are on disk
+    }
+}

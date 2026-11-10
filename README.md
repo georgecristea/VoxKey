@@ -9,6 +9,8 @@
 turns your voice into text and pastes it at the cursor, in any app. Your audio never leaves the
 Mac.
 
+<p align="center"><img src="docs/screenshot.png" width="420" alt="VoxKey popover while listening: level meter, timer and the live transcript preview"></p>
+
 ## Features
 
 - **Hold to talk.** Hold **Fn + Control** (or any shortcut you record in Settings), speak, release.
@@ -116,6 +118,7 @@ toolkit behind this app, [ClipVault](https://github.com/georgecristea/ClipVault)
 swift build            # compile
 swift run              # build and launch (dev only)
 ./scripts/install.sh   # package, install to /Applications, relaunch
+.build/debug/VoxKey --demo --snapshot out.png   # render a sample popover to a PNG; starts nothing
 ```
 
 Always test from `/Applications`. Packaging scripts: `scripts/package-app.sh` (app bundle with the
