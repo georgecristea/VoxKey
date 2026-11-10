@@ -1,0 +1,9 @@
+.build/
+.swiftpm/
+dist/
+builds/
+.DS_Store
+**/__pycache__/
+.claude/settings.local.json
+private/
+/Packages/
