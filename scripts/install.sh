@@ -16,7 +16,17 @@ APP_NAME="$(/usr/libexec/PlistBuddy -c 'Print CFBundleName' "$PLIST")"
 BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$PLIST")"
 TARGET="/Applications/$APP_NAME.app"
 
+"$ROOT_DIR/scripts/setup-signing.sh"
 "$ROOT_DIR/scripts/package-app.sh"
+
+# The Accessibility grant is tied to the signature. If the installed copy was signed differently
+# (ad-hoc, or another certificate), its grant would show as on in System Settings but be refused
+# for the new build, so clear it and let the app ask again. Same signature: nothing to do.
+requirement() { codesign -d --requirements - "$1" 2>/dev/null | sed -n 's/^designated => //p'; }
+if [[ "$(requirement "$TARGET")" != "$(requirement "$ROOT_DIR/dist/$APP_NAME.app")" ]]; then
+    echo "Signature changed: resetting the Accessibility grant (grant it once more after launch)."
+    tccutil reset Accessibility "$BUNDLE_ID" >/dev/null || true
+fi
 
 if pgrep -xq "$APP_NAME"; then
     echo "Quitting running ${APP_NAME}..."

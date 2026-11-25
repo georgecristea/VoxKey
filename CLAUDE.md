@@ -60,7 +60,9 @@ Bundle id `com.georgecristea.VoxKey`. To test a cold-start grant flow:
 `tccutil reset All com.georgecristea.VoxKey` (quit the app first), then relaunch.
 
 > TCC keys Accessibility to the code-signing identity — ad-hoc/dev re-signing on each rebuild
-> invalidates the grant ("granted-but-stale"). Stable Developer ID signing is the fix.
+> invalidates the grant ("granted-but-stale": the toggle shows on, the app is refused). Local
+> builds are therefore signed with a self-signed "Local Code Signing" certificate
+> (`scripts/setup-signing.sh`, run by `install.sh`); shipped builds need Developer ID.
 
 ## Verifying a change
 

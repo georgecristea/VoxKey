@@ -54,6 +54,12 @@ fi
 
 if command -v codesign >/dev/null 2>&1; then
     SIGN_IDENTITY="${CODE_SIGN_IDENTITY:-}"
+    # Prefer the local self-signed certificate (scripts/setup-signing.sh): it never changes, so
+    # the Accessibility grant survives rebuilds. Apple Development certificates expire yearly.
+    LOCAL_SIGN_NAME="${LOCAL_SIGN_NAME:-Local Code Signing}"
+    if [[ -z "$SIGN_IDENTITY" ]] && security find-certificate -c "$LOCAL_SIGN_NAME" >/dev/null 2>&1; then
+        SIGN_IDENTITY="$LOCAL_SIGN_NAME"
+    fi
     if [[ -z "$SIGN_IDENTITY" ]] && command -v security >/dev/null 2>&1; then
         SIGN_IDENTITY="$(
             security find-identity -v -p codesigning |
@@ -62,6 +68,11 @@ if command -v codesign >/dev/null 2>&1; then
         )"
     fi
     SIGN_IDENTITY="${SIGN_IDENTITY:--}"
+    if [[ "$SIGN_IDENTITY" == "-" ]]; then
+        echo "WARNING: no signing certificate found, signing ad-hoc. macOS will drop the" >&2
+        echo "Accessibility grant on every rebuild. Run ./scripts/setup-signing.sh once." >&2
+    fi
+    echo "Signing with: $SIGN_IDENTITY"
     codesign --force --deep --sign "$SIGN_IDENTITY" "$APP_DIR" >/dev/null
 fi
 
