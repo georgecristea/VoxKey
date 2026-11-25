@@ -13,11 +13,15 @@ RESOURCES_DIR="$CONTENTS_DIR/Resources"
 cd "$ROOT_DIR"
 
 if swift build -c release --arch arm64 --arch x86_64; then
-    BINARY_PATH="$ROOT_DIR/.build/apple/Products/Release/$APP_NAME"
+    # Ask SwiftPM: the universal output folder moved between toolchains, and a hard-coded
+    # path silently picks up a stale build.
+    BIN_DIR="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)"
+    BINARY_PATH="$BIN_DIR/$APP_NAME"
 else
     echo "Universal build failed; falling back to host-architecture release build." >&2
     swift build -c release
-    BINARY_PATH="$ROOT_DIR/.build/release/$APP_NAME"
+    BIN_DIR="$(swift build -c release --show-bin-path)"
+    BINARY_PATH="$BIN_DIR/$APP_NAME"
 fi
 
 if [[ ! -f "$BINARY_PATH" ]]; then
@@ -44,12 +48,10 @@ if [[ -d "$PRODUCTS_DIR/whisper.framework" ]]; then
     cp -R "$PRODUCTS_DIR/whisper.framework" "$LIB_DIR/"
 fi
 
-if [[ -d "$ROOT_DIR/.build/apple/Products/Release/VoxKey_VoxKey.bundle" ]]; then
-    cp -R "$ROOT_DIR/.build/apple/Products/Release/VoxKey_VoxKey.bundle" "$RESOURCES_DIR/"
-elif [[ -d "$ROOT_DIR/.build/release/VoxKey_VoxKey.resources" ]]; then
-    cp -R "$ROOT_DIR/.build/release/VoxKey_VoxKey.resources/." "$RESOURCES_DIR/"
-elif [[ -d "$ROOT_DIR/.build/release/VoxKey_VoxKey.bundle" ]]; then
-    cp -R "$ROOT_DIR/.build/release/VoxKey_VoxKey.bundle" "$RESOURCES_DIR/"
+if [[ -d "$BIN_DIR/VoxKey_VoxKey.bundle" ]]; then
+    cp -R "$BIN_DIR/VoxKey_VoxKey.bundle" "$RESOURCES_DIR/"
+elif [[ -d "$BIN_DIR/VoxKey_VoxKey.resources" ]]; then
+    cp -R "$BIN_DIR/VoxKey_VoxKey.resources/." "$RESOURCES_DIR/"
 fi
 
 if command -v codesign >/dev/null 2>&1; then
