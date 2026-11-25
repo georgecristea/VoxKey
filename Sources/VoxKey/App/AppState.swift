@@ -240,6 +240,8 @@ final class AppState: ObservableObject {
     }
 
     private func handlePartial(_ text: String) {
+        // Partials can arrive after release; typing them then would duplicate text.
+        guard captureState == .recording else { return }
         partialText = text
         if settings.liveTyping {
             applyLiveText(text)
