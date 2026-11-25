@@ -139,6 +139,16 @@ embedded whisper.framework), `scripts/make-dmg.sh`, `scripts/release.sh <tag>` (
 Models are downloaded by the app at runtime and are not part of this repository. See
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
+## Related projects
+
+Open-source Mac utilities by the same author, built on one shared toolkit:
+
+| Project | What it is |
+|---------|------------|
+| [ClipVault](https://github.com/georgecristea/ClipVault) | Clipboard history in a bar at the bottom of the screen: ⇧⌘V, type to search, paste |
+| [Upkeep](https://github.com/georgecristea/upkeep) | Keeps a curated list of Mac apps and command-line tools up to date |
+| [MacUtilityKit](https://github.com/georgecristea/MacUtilityKit) | The SwiftUI + AppKit toolkit the three apps share |
+
 ## License
 
 [MIT](LICENSE) © DeepDive Solna AB. Made by [George Cristea](https://github.com/georgecristea).
